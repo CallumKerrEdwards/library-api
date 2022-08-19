@@ -1,0 +1,31 @@
+version: '3'
+
+tasks:
+  gobuild:
+    dir: server
+    cmds:
+      - go build -v ./... 
+  
+  gotest:
+    dir: server
+    cmds:
+      - go test -v ./...
+
+  lint:
+    dir: server
+    cmds:
+      - golangci-lint run
+
+  # run:
+  #   cmds:
+  #     - docker-compose up --build
+
+  tidy:
+    dir: server
+    cmds:
+      - go mod tidy
+
+  vendor:
+    dir: server
+    cmds:
+      - go mod vendor
