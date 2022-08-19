@@ -2,8 +2,13 @@ package book
 
 import (
 	"context"
+	"errors"
 
 	"github.com/CallumKerrEdwards/library/server/pkg/log"
+)
+
+var (
+	ErrNotImplemented = errors.New("Not implemented")
 )
 
 type Store interface {
@@ -18,16 +23,4 @@ type Service struct {
 
 func NewService(store Store) *Service {
 	return &Service{Store: store}
-}
-
-// GetBook - getting book
-func (s *Service) GetBook(ctx context.Context, id string) (Book, error) {
-	s.Log.WithField("id", id).Infof("getting book")
-
-	book, err := s.Store.GetBook(ctx, id)
-	if err != nil {
-		s.Log.WithError(err).Debugln("Could not get book")
-		return Book{}, err
-	}
-	return book, nil
 }
