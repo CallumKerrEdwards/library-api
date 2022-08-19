@@ -13,4 +13,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /bin/library cmd/server/main.go
 FROM alpine:latest AS production
 WORKDIR /app
 COPY --from=builder /bin/library .
+COPY migrations/ /migrations
 CMD ["/app/library"]

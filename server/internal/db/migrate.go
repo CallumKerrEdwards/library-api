@@ -23,7 +23,7 @@ func (d *Database) MigrateDB() error {
 		driver,
 	)
 	if err != nil {
-		fmt.Println(err)
+		d.Logger.Errorln(err)
 		return err
 	}
 

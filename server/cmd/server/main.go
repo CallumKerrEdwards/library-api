@@ -13,15 +13,15 @@ import (
 func Run(logger log.Logger) error {
 	logger.Infoln("Setting up Library server")
 
-	_, err := db.NewDatabase(logger)
+	database, err := db.NewDatabase(logger)
 	if err != nil {
 		logger.Errorln("failed to connect to the database")
 		return err
 	}
-	// if err := db.MigrateDB(); err != nil {
-	// 	logger.Errorln("failed to migrate database")
-	// 	return err
-	// }
+	if err := database.MigrateDB(); err != nil {
+		logger.Errorln("failed to migrate database")
+		return err
+	}
 
 	return nil
 }

@@ -14,6 +14,7 @@ type Book struct {
 
 // Series - representation of a series of books
 type Series struct {
+	ID       string
 	Sequence decimal.Decimal
 	Title    string
 }
