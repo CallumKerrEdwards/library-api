@@ -14,7 +14,7 @@ func NewLogger() *Logger {
 	logrusLogger := &Logger{
 		logrus.New(),
 	}
-	logrusLogger.SetLevel(logrus.ErrorLevel)
+	logrusLogger.SetLevel(logrus.InfoLevel)
 	return logrusLogger
 }
 

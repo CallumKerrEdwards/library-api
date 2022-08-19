@@ -16,10 +16,6 @@ tasks:
     cmds:
       - golangci-lint run
 
-  # run:
-  #   cmds:
-  #     - docker-compose up --build
-
   tidy:
     dir: server
     cmds:
@@ -29,3 +25,11 @@ tasks:
     dir: server
     cmds:
       - go mod vendor
+  
+  run:
+    cmds:
+      - docker compose up --build
+  
+  conbuild:
+    cmds:
+      - docker compose build
