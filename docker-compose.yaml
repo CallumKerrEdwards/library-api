@@ -1,40 +1,38 @@
 version: "3.8"
 
 services:
-  db:
-    image: postgres:12.2-alpine
-    container_name: "comments-database"
-    ports:
-      - "5432:5432"
+  mongo:
+    image: mongo
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongopwd
     networks:
       - fullstack
-    volumes:
-      - database_postgres:/var/lib/postgresql/data
-  
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
   api:
     build: server/
-    image: "containers.hazel/books-api"
+    image: "ghcr.io/callumkerredwards/library/server:latest"
     environment:
-      DB_USERNAME: "postgres"
-      DB_PASSWORD: "postgres"
-      DB_DB: "postgres"
-      DB_HOST: "db"
-      DB_TABLE: "postgres"
-      DB_PORT: "5432"
-      SSL_MODE: "disable"
+      DB_USERNAME: "root"
+      DB_PASSWORD: "mongopwd"
+      DB_HOST: "mongo"
+      DB_PORT: "27017"
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - mongo
     networks:
       - fullstack
 
 volumes:
   database_postgres:
+  database_mongo:
 
 networks:
   fullstack:

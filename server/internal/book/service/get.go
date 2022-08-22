@@ -1,9 +1,11 @@
-package book
+package service
 
 import (
 	"context"
 	"errors"
 	"fmt"
+
+	"github.com/CallumKerrEdwards/library/server/pkg/books"
 )
 
 var (
@@ -11,13 +13,13 @@ var (
 )
 
 // GetBook - getting book
-func (s *Service) GetBook(ctx context.Context, id string) (Book, error) {
+func (s *Service) GetBook(ctx context.Context, id string) (books.Book, error) {
 	s.Log.WithField("id", id).Infof("getting Book")
 
 	book, err := s.Store.GetBook(ctx, id)
 	if err != nil {
 		s.Log.WithError(err).Errorln("Get Failed")
-		return Book{}, fmt.Errorf("%w %s", ErrFetchingBook, id)
+		return books.Book{}, fmt.Errorf("%w %s", ErrFetchingBook, id)
 	}
 	return book, nil
 }

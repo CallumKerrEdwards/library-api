@@ -21,15 +21,28 @@ tasks:
     cmds:
       - go mod tidy
 
-  vendor:
+  gotest-e2e:
     dir: server
     cmds:
-      - go mod vendor
+      - go test -tags=e2e -v ./...
   
   run:
     cmds:
       - docker compose up --build
+
+  run-detached:
+    cmds:
+      - docker compose up --wait --build
+  stop:
+    cmds:
+      - docker compose down
   
   conbuild:
     cmds:
       - docker compose build
+
+  e2e-test:
+    cmds:
+      - task: run-detached
+      - task: gotest-e2e
+      - task: stop

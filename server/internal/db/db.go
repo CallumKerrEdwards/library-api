@@ -5,38 +5,38 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jmoiron/sqlx"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 
 	"github.com/CallumKerrEdwards/library/server/pkg/log"
 )
 
 type Database struct {
-	Client *sqlx.DB
+	Client *mongo.Client
 	log.Logger
 }
 
-func NewDatabase(logger log.Logger) (*Database, error) {
+func NewDatabase(ctx context.Context, logger log.Logger) (*Database, error) {
 	connectionString := fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+		"mongodb://%s:%s@%s:%s",
+		os.Getenv("DB_USERNAME"),
+		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USERNAME"),
-		os.Getenv("DB_TABLE"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("SSL_MODE"),
 	)
 
-	dbConn, err := sqlx.Connect("postgres", connectionString)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
 	if err != nil {
 		return &Database{}, fmt.Errorf("could not connect to the database: %w", err)
 	}
 
 	return &Database{
-		Client: dbConn,
+		Client: client,
 		Logger: logger,
 	}, nil
 }
 
 func (d *Database) Ping(ctx context.Context) error {
-	return d.Client.DB.PingContext(ctx)
+	return d.Client.Ping(ctx, readpref.Primary())
 }
