@@ -40,6 +40,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       -
+        name: Stand up test environment
+        run: |
+          tag="$( cut -d ',' -f 1 <<< "${{ steps.meta.outputs.tags }}" )"; echo "$tag"
+          printf 'services:\n  api:\n    image:%s\n' "$tag" > docker-compose.override.yml
+          cat docker-compose.override.yml
+      -
         name: Build locally
         uses: docker/build-push-action@v3
         with:
@@ -47,12 +53,7 @@ jobs:
           load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      -
-        name: Stand up test environment
-        run: |
-          tag="$( cut -d ',' -f 1 <<< "${{ steps.meta.outputs.tags }}" )"; echo "$tag"
-          echo "services:\n  api:\n    image:$tag\n" > docker-compose.override.yml
-          cat docker-compose.override.yml
+
 
       # -
       #   name: Run End to End tests
