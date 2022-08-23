@@ -17,12 +17,13 @@ services:
 
   api:
     build: server/
-    image: "ghcr.io/callumkerredwards/library/server:latest"
+    image: "ghcr.io/callumkerredwards/library/server:development"
     environment:
       DB_USERNAME: "root"
       DB_PASSWORD: "mongopwd"
       DB_HOST: "mongo"
       DB_PORT: "27017"
+      JWT_SIGNING_KEY: "test-signing-key"
     ports:
       - "8080:8080"
     depends_on:
@@ -31,7 +32,6 @@ services:
       - fullstack
 
 volumes:
-  database_postgres:
   database_mongo:
 
 networks:

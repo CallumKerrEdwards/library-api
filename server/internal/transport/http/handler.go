@@ -11,6 +11,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/CallumKerrEdwards/library/server/internal/transport/http/auth"
 	"github.com/CallumKerrEdwards/library/server/pkg/books"
 	"github.com/CallumKerrEdwards/library/server/pkg/log"
 )
@@ -25,10 +26,11 @@ type BookService interface {
 }
 
 type Handler struct {
-	Router  *mux.Router
-	Service BookService
-	Server  *http.Server
-	Log     log.Logger
+	Router      *mux.Router
+	Service     BookService
+	Server      *http.Server
+	Log         log.Logger
+	AuthHandler *auth.Handler
 }
 
 func NewHandler(service BookService, logger log.Logger) *Handler {
@@ -43,6 +45,7 @@ func NewHandler(service BookService, logger log.Logger) *Handler {
 	h.Router.Use(JSONMiddleware)
 	h.Router.Use(m.LoggingMiddleware)
 	h.Router.Use(TimeoutMiddleware)
+	h.AuthHandler = &auth.Handler{Log: logger}
 
 	h.Server = &http.Server{
 		Addr:    address,
@@ -56,8 +59,11 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
 	})
+	h.Router.HandleFunc("/api/v1/auth/login", h.AuthHandler.Login).Methods("GET")
+	h.Router.HandleFunc("/api/v1/auth/refresh", h.AuthHandler.Refresh).Methods("GET")
+	h.Router.HandleFunc("/api/v1/auth/welcome", h.AuthHandler.Welcome).Methods("GET")
 
-	h.Router.HandleFunc("/api/v1/book", h.PostBook).Methods("POST")
+	h.Router.HandleFunc("/api/v1/book", auth.JWTAuth(h.PostBook)).Methods("POST")
 	h.Router.HandleFunc("/api/v1/book/{id}", h.GetBook).Methods("GET")
 }
 

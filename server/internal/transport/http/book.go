@@ -64,7 +64,9 @@ func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(fetched); err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		h.Log.WithError(err).Errorln("Cannot encode response")
+		return
 	}
 }
 
