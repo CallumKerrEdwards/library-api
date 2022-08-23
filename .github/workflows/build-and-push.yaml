@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Container Build and Push
 on:
   push:
     branches: [ $default-branch ]
