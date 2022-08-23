@@ -33,7 +33,21 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       -
-        name: Build and push
+        name: Build locally
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:server"
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      -
+        name: Set docker compose override
+        run: |
+          echo "${{ steps.meta.outputs.tags }}"
+          docker compose version
+
+      -
+        name: Build and build
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:server"
