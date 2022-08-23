@@ -43,7 +43,7 @@ jobs:
         name: Set docker compose override
         run: |
           tag="$( cut -d ',' -f 1 <<< "${{ steps.meta.outputs.tags }}" )"
-          printf 'services:\n  api:\n    image:%s\n' "$tag" > docker-compose.override.yml
+          printf 'version: "3.8"\nservices:\n  api:\n    image: %s\n' "$tag" > docker-compose.override.yml
           cat docker-compose.override.yml
       -
         name: Build locally
