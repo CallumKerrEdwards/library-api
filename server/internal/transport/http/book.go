@@ -45,7 +45,21 @@ func (h *Handler) PostBook(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(postedBook); err != nil {
 		h.Log.WithError(err).Errorln("Error handling request", r)
 	}
+}
 
+func (h *Handler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
+	fetched, err := h.Service.GetAllBooks(r.Context())
+	if err != nil {
+		h.Log.WithError(err).Errorln("Cannot get all book")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(fetched); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		h.Log.WithError(err).Errorln("Cannot encode response")
+		return
+	}
 }
 
 func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +72,7 @@ func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 
 	fetched, err := h.Service.GetBook(r.Context(), id)
 	if err != nil {
-		h.Log.WithError(err).Errorln("Cannot get book with id", id)
+		h.Log.WithError(err).Errorln("Cannot get all books with id", id)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

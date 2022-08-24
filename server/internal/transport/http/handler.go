@@ -23,6 +23,7 @@ var (
 type BookService interface {
 	PostBook(context.Context, books.Book) (books.Book, error)
 	GetBook(ctx context.Context, ID string) (books.Book, error)
+	GetAllBooks(ctx context.Context) ([]books.Book, error)
 }
 
 type Handler struct {
@@ -64,6 +65,7 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/api/v1/auth/welcome", h.AuthHandler.Welcome).Methods("GET")
 
 	h.Router.HandleFunc("/api/v1/book", auth.JWTAuth(h.PostBook)).Methods("POST")
+	h.Router.HandleFunc("/api/v1/book", h.GetAllBooks).Methods("GET")
 	h.Router.HandleFunc("/api/v1/book/{id}", h.GetBook).Methods("GET")
 }
 
