@@ -43,14 +43,16 @@ func NewHandler(service BookService, logger log.Logger) *Handler {
 	h.mapRoutes()
 
 	m := NewMiddlewares(logger)
+
 	h.Router.Use(JSONMiddleware)
 	h.Router.Use(m.LoggingMiddleware)
 	h.Router.Use(TimeoutMiddleware)
 	h.AuthHandler = &auth.Handler{Log: logger}
 
 	h.Server = &http.Server{
-		Addr:    address,
-		Handler: h.Router,
+		Addr:              address,
+		Handler:           h.Router,
+		ReadHeaderTimeout: 15 * time.Second,
 	}
 
 	return h
@@ -71,6 +73,7 @@ func (h *Handler) mapRoutes() {
 
 func (h *Handler) Serve() error {
 	h.Log.Infoln("Starting server at", address)
+
 	go func() {
 		if err := h.Server.ListenAndServe(); err != nil {
 			h.Log.WithError(err).Errorln("Server Error")
@@ -83,8 +86,14 @@ func (h *Handler) Serve() error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	h.Server.Shutdown(ctx)
+
+	err := h.Server.Shutdown(ctx)
+	if err != nil {
+		h.Log.WithError(err).Errorln("Problem shutting down server")
+		return err
+	}
 
 	h.Log.Infoln("Shut down server gracefully")
+
 	return nil
 }

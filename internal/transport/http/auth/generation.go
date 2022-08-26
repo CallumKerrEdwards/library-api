@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 
@@ -27,6 +28,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(getJWTSigningKey())
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -35,6 +37,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(LoginResponse{JWT: tokenString}); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		h.Log.WithError(err).Errorln("Cannot encode response")
+
 		return
 	}
 }
@@ -50,14 +53,18 @@ func (h *Handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	tkn, err := jwt.ParseWithClaims(jwtToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return getJWTSigningKey(), nil
 	})
+
 	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
+		if errors.Is(err, jwt.ErrSignatureInvalid) {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+
 		w.WriteHeader(http.StatusBadRequest)
+
 		return
 	}
+
 	if !tkn.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -67,6 +74,7 @@ func (h *Handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	claims.ExpiresAt = &jwt.NumericDate{Time: expirationTime}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	refreshedTokenString, err := token.SignedString(getJWTSigningKey())
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -75,6 +83,7 @@ func (h *Handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(LoginResponse{JWT: refreshedTokenString}); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		h.Log.WithError(err).Errorln("Cannot encode response")
+
 		return
 	}
 }

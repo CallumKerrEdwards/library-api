@@ -2,7 +2,7 @@ package books
 
 import "github.com/google/uuid"
 
-// Book - representation of a book
+// Book - representation of a book.
 type Book struct {
 	ID     string `json:"id"`
 	Title  string `json:"title"`
@@ -10,7 +10,7 @@ type Book struct {
 	Series Series `json:"series"`
 }
 
-// Series - representation of a series of books
+// Series - representation of a series of books.
 type Series struct {
 	Sequence int    `json:"sequence"`
 	Title    string `json:"title"`

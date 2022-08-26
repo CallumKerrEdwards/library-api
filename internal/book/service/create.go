@@ -6,7 +6,7 @@ import (
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
 )
 
-// CreateBook - create new book
+// CreateBook - create new book.
 func (s *Service) PostBook(ctx context.Context, book books.Book) (books.Book, error) {
 	s.Log.WithField("id", book.ID).Infoln("creating Book")
 
@@ -15,5 +15,6 @@ func (s *Service) PostBook(ctx context.Context, book books.Book) (books.Book, er
 		s.Log.WithError(err).Errorln("Get Failed")
 		return books.Book{}, err
 	}
+
 	return createdBook, nil
 }

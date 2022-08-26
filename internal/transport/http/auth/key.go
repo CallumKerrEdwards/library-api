@@ -10,5 +10,6 @@ func getJWTSigningKey() []byte {
 	if len(jwtSigningKey) < 1 {
 		jwtSigningKey = []byte(os.Getenv("JWT_SIGNING_KEY"))
 	}
+
 	return jwtSigningKey
 }

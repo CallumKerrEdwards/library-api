@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ErrNotImplemented = errors.New("Not implemented")
+	ErrNotImplemented = errors.New("not implemented")
 )
 
 type Store interface {
@@ -18,7 +18,7 @@ type Store interface {
 	PostBook(ctx context.Context, book books.Book) (books.Book, error)
 }
 
-// Service - provides all functions for accessing and modifying Books
+// Service - provides all functions for accessing and modifying Books.
 type Service struct {
 	Store
 	Log log.Logger

@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -37,16 +38,17 @@ func getAuthHeader(r *http.Request) (string, error) {
 	}
 
 	authHeaderParts := strings.Split(authHeader[0], " ")
-	if len(authHeaderParts) != 2 || strings.ToLower(authHeaderParts[0]) != "bearer" {
+	if len(authHeaderParts) != 2 || !strings.EqualFold(authHeaderParts[0], "bearer") {
 		return "", errUnauthorized
 	}
+
 	return authHeaderParts[1], nil
 }
 
 func validateToken(accessToken string) bool {
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("could not validate auth token")
+			return nil, fmt.Errorf("%w: could not validate auth token", errUnauthorized)
 		}
 		return getJWTSigningKey(), nil
 	})
@@ -54,5 +56,6 @@ func validateToken(accessToken string) bool {
 	if err != nil {
 		return false
 	}
+
 	return token.Valid
 }

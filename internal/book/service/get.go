@@ -12,7 +12,7 @@ var (
 	ErrFetchingBook = errors.New("failed to fetch Book by id")
 )
 
-// GetBook - getting book by ID
+// GetBook - getting book by ID.
 func (s *Service) GetBook(ctx context.Context, id string) (books.Book, error) {
 	s.Log.WithField("id", id).Infof("getting Book")
 
@@ -21,10 +21,11 @@ func (s *Service) GetBook(ctx context.Context, id string) (books.Book, error) {
 		s.Log.WithError(err).Errorln("Get Failed")
 		return books.Book{}, fmt.Errorf("%w %s", ErrFetchingBook, id)
 	}
+
 	return book, nil
 }
 
-// GetAllBooks - getting all books
+// GetAllBooks - getting all books.
 func (s *Service) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 	s.Log.Infof("getting all books")
 
@@ -33,5 +34,6 @@ func (s *Service) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 		s.Log.WithError(err).Errorln("Get All Failed")
 		return []books.Book{}, ErrFetchingBook
 	}
+
 	return book, nil
 }

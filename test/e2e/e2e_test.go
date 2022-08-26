@@ -63,5 +63,4 @@ func TestEndToEndWorkflow(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.Equal(t, fmt.Sprintf(expectedGetBody, post.ID), string(resp.Body()))
-
 }
