@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/server
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   docker:
@@ -49,7 +49,6 @@ jobs:
         run: |
           docker compose up --wait
       - name: Run End to End tests
-        working-directory: server
         run: go test -tags=e2e -v ./...
       - name: Shut down test environment
         if: always()
