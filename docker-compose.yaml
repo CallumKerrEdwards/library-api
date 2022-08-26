@@ -32,8 +32,7 @@ services:
       - fullstack
   
   ui:
-    build: client/
-    image: "ghcr.io/callumkerredwards/library/client:development"
+    image: "ghcr.io/callumkerredwards/library-client:latest"
     depends_on:
       - api
     networks:
