@@ -31,16 +31,18 @@ services:
     networks:
       - fullstack
   
-  ui:
+  client:
     image: "ghcr.io/callumkerredwards/library-client:latest"
     depends_on:
       - api
     networks:
       - fullstack
   
-  proxy:
-    build: .
-    image: "ghcr.io/callumkerredwards/library/proxy:development"
+  gateway:
+    image: "ghcr.io/callumkerredwards/library-gateway:latest"
+    environment:
+      - LIBRARY_CLIENT_HOST=client:80
+      - LIBRARY_API_HOST=api:8080
     ports:
     - "8080:80"
     networks:
