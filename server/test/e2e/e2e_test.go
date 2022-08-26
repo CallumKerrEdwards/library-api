@@ -33,7 +33,7 @@ type postResponse struct {
 
 func TestEndToEndWorkflow(t *testing.T) {
 	client := resty.New()
-	apiHost := "http://localhost:8081/api/v1"
+	apiHost := "http://localhost:8080/api/v1"
 
 	// login
 	resp, err := client.R().Get(apiHost + "/auth/login")
