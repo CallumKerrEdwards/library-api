@@ -35,8 +35,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Set docker compose override
         run: |
-          tag="$( cut -d ',' -f 1 <<< "${{ steps.meta.outputs.tags }}" )"
-          printf 'version: "3.8"\nservices:\n  api:\n    image: %s\n' "$tag" > docker-compose.override.yml
+          readarray -t tags < <(echo "${{ steps.meta.outputs.tags }}")
+          printf 'version: "3.8"\nservices:\n  api:\n    image: %s\n' "${tags[0]}" > docker-compose.override.yml
           cat docker-compose.override.yml
       - name: Build locally
         uses: docker/build-push-action@v3
