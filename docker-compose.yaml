@@ -7,19 +7,17 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongopwd
     networks:
-      - fullstack
+      - backendstack
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 15s
-    volumes:
-      - "database_mongo:/data/db"
 
   api:
-    build: server/
-    image: "ghcr.io/callumkerredwards/library/server:development"
+    build: .
+    image: "ghcr.io/callumkerredwards/library-api:development"
     environment:
       DB_USERNAME: "root"
       DB_PASSWORD: "mongopwd"
@@ -28,29 +26,11 @@ services:
       JWT_SIGNING_KEY: "test-signing-key"
     depends_on:
       - mongo
-    networks:
-      - fullstack
-  
-  client:
-    image: "ghcr.io/callumkerredwards/library-client:latest"
-    depends_on:
-      - api
-    networks:
-      - fullstack
-  
-  gateway:
-    image: "ghcr.io/callumkerredwards/library-gateway:latest"
-    environment:
-      - LIBRARY_CLIENT_HOST=client:80
-      - LIBRARY_API_HOST=api:8080
     ports:
-    - "8080:80"
+    - "8081:8080"
     networks:
-      - fullstack
-
-volumes:
-  database_mongo:
+      - backendstack
 
 networks:
-  fullstack:
+  backendstack:
     driver: bridge

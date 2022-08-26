@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 type Database struct {

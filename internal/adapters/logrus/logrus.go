@@ -3,7 +3,7 @@ package logrus
 import (
 	"github.com/sirupsen/logrus"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 type Logger struct {

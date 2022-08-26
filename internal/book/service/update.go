@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
 )
 
 // UpdateBook - update book details

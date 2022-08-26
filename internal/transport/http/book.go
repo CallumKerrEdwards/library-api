@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
 	validator "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )

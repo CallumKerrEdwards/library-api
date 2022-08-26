@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 	"github.com/golang-jwt/jwt/v4"
 )
 

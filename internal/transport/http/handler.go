@@ -11,9 +11,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/CallumKerrEdwards/library/server/internal/transport/http/auth"
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/internal/transport/http/auth"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 var (

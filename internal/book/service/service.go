@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 var (

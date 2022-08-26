@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 type Middlewares struct {

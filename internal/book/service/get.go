@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
 )
 
 var (

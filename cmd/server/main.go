@@ -4,11 +4,11 @@ import (
 	"context"
 	"os"
 
-	"github.com/CallumKerrEdwards/library/server/internal/adapters/logrus"
-	bookService "github.com/CallumKerrEdwards/library/server/internal/book/service"
-	"github.com/CallumKerrEdwards/library/server/internal/db"
-	transportHttp "github.com/CallumKerrEdwards/library/server/internal/transport/http"
-	"github.com/CallumKerrEdwards/library/server/pkg/log"
+	"github.com/CallumKerrEdwards/library-api/internal/adapters/logrus"
+	bookService "github.com/CallumKerrEdwards/library-api/internal/book/service"
+	"github.com/CallumKerrEdwards/library-api/internal/db"
+	transportHttp "github.com/CallumKerrEdwards/library-api/internal/transport/http"
+	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 // Run - sets up our application

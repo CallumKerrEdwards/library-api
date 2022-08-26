@@ -5,7 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 
-	"github.com/CallumKerrEdwards/library/server/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
 )
 
 func (d *Database) GetBook(ctx context.Context, bookID string) (books.Book, error) {
