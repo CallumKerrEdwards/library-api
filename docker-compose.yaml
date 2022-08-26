@@ -14,6 +14,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+    volumes:
+      - "database_mongo:/data/db"
 
   api:
     build: server/
@@ -24,10 +26,24 @@ services:
       DB_HOST: "mongo"
       DB_PORT: "27017"
       JWT_SIGNING_KEY: "test-signing-key"
-    ports:
-      - "8080:8080"
     depends_on:
       - mongo
+    networks:
+      - fullstack
+  
+  ui:
+    build: client/
+    image: "ghcr.io/callumkerredwards/library/client:development"
+    depends_on:
+      - api
+    networks:
+      - fullstack
+  
+  proxy:
+    build: .
+    image: "ghcr.io/callumkerredwards/library/proxy:development"
+    ports:
+    - "8080:80"
     networks:
       - fullstack
 

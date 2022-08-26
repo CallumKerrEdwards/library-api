@@ -46,3 +46,8 @@ tasks:
       - task: run-detached
       - task: gotest-e2e
       - task: stop
+
+  client-start:
+    dir: client
+    cmds:
+      - npm run serve

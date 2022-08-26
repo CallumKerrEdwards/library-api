@@ -12,7 +12,7 @@ import (
 
 func TestHealthCheckEndpoint(t *testing.T) {
 	client := resty.New()
-	resp, err := client.R().Get("http://localhost:8080/healthcheck")
+	resp, err := client.R().Get("http://localhost:8081/healthcheck")
 	assert.NoError(t, err)
 
 	assert.Equal(t, 200, resp.StatusCode())
