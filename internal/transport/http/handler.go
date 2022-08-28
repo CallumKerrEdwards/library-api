@@ -9,11 +9,11 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/CallumKerrEdwards/loggerrific"
 	"github.com/gorilla/mux"
 
 	"github.com/CallumKerrEdwards/library-api/internal/transport/http/auth"
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
-	"github.com/CallumKerrEdwards/loggerrific"
 )
 
 var (

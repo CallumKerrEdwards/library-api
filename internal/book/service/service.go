@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/CallumKerrEdwards/library-api/pkg/books"
 	"github.com/CallumKerrEdwards/loggerrific"
+
+	"github.com/CallumKerrEdwards/library-api/pkg/books"
 )
 
 var (
