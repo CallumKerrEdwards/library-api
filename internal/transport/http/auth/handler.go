@@ -5,13 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/CallumKerrEdwards/loggerrific"
 	"github.com/golang-jwt/jwt/v4"
-
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 type Handler struct {
-	Log log.Logger
+	Log loggerrific.Logger
 }
 
 type WelcomeResponse struct {

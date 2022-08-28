@@ -6,14 +6,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
+	"github.com/CallumKerrEdwards/loggerrific"
 )
 
 type Middlewares struct {
-	log.Logger
+	loggerrific.Logger
 }
 
-func NewMiddlewares(logger log.Logger) *Middlewares {
+func NewMiddlewares(logger loggerrific.Logger) *Middlewares {
 	return &Middlewares{Logger: logger}
 }
 

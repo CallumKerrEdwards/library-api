@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
+	"github.com/CallumKerrEdwards/loggerrific"
 )
 
 var (
@@ -21,9 +21,9 @@ type Store interface {
 // Service - provides all functions for accessing and modifying Books.
 type Service struct {
 	Store
-	Log log.Logger
+	Log loggerrific.Logger
 }
 
-func NewService(store Store, logger log.Logger) *Service {
+func NewService(store Store, logger loggerrific.Logger) *Service {
 	return &Service{Store: store, Log: logger}
 }

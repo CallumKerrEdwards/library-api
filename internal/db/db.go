@@ -5,19 +5,18 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/CallumKerrEdwards/loggerrific"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 type Database struct {
 	Client *mongo.Client
-	log.Logger
+	loggerrific.Logger
 }
 
-func NewDatabase(ctx context.Context, logger log.Logger) (*Database, error) {
+func NewDatabase(ctx context.Context, logger loggerrific.Logger) (*Database, error) {
 	connectionString := fmt.Sprintf(
 		"mongodb://%s:%s@%s:%s",
 		os.Getenv("DB_USERNAME"),

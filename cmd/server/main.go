@@ -4,15 +4,16 @@ import (
 	"context"
 	"os"
 
+	"github.com/CallumKerrEdwards/loggerrific"
+
 	"github.com/CallumKerrEdwards/library-api/internal/adapters/logrus"
 	bookService "github.com/CallumKerrEdwards/library-api/internal/book/service"
 	"github.com/CallumKerrEdwards/library-api/internal/db"
 	transportHttp "github.com/CallumKerrEdwards/library-api/internal/transport/http"
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
 )
 
 // Run - sets the application.
-func Run(logger log.Logger) error {
+func Run(logger loggerrific.Logger) error {
 	logger.Infoln("Setting up Library API")
 
 	database, err := db.NewDatabase(context.Background(), logger)

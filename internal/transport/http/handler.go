@@ -13,7 +13,7 @@ import (
 
 	"github.com/CallumKerrEdwards/library-api/internal/transport/http/auth"
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
-	"github.com/CallumKerrEdwards/library-api/pkg/log"
+	"github.com/CallumKerrEdwards/loggerrific"
 )
 
 var (
@@ -30,11 +30,11 @@ type Handler struct {
 	Router      *mux.Router
 	Service     BookService
 	Server      *http.Server
-	Log         log.Logger
+	Log         loggerrific.Logger
 	AuthHandler *auth.Handler
 }
 
-func NewHandler(service BookService, logger log.Logger) *Handler {
+func NewHandler(service BookService, logger loggerrific.Logger) *Handler {
 	h := &Handler{
 		Service: service,
 		Log:     logger,
