@@ -3,7 +3,6 @@ package books
 import (
 	"encoding/json"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -19,7 +18,7 @@ const (
 		}
 	],
 	"description": "I long for the days before the Last Desolation.\nThe age before the Heralds abandoned us and the Knights Radiant turned against us. A time when there was still magic in the world and honor in the hearts of men.\nhe world became ours, and we lost it. Nothing, it appears, is more challenging to the souls of men than victory itself.\nOr was that victory an illusion all along? Did our enemies realize that the harder they fought, the stronger we resisted? Perhaps they saw that the heat and the hammer only make for a better grade of sword. But ignore the steel long enough, and it will eventually rust away.\nThere are four whom we watch. The first is the surgeon, forced to put aside healing to become a soldier in the most brutal war of our time. The second is the assassin, a murderer who weeps as he kills. The third is the liar, a young woman who wears a scholar's mantle over the heart of a thief. The last is the highprince, a warlord whose eyes have opened to the past as his thirst for battle wanes.\nThe world can change. Surgebinding and Shardwielding can return; the magics of ancient days can become ours again. These four people are key.\nOne of them may redeem us.\nAnd one of them will destroy us.",
-	"releaseDate": "2010-08-31T00:00:00Z",
+	"releaseDate": "2010-08-31",
 	"genres": [
 		"Fantasy"
 	],
@@ -47,10 +46,7 @@ const (
 )
 
 func TestMarshalBookJSON(t *testing.T) {
-	layout := "2006-01-02"
-	str := "2010-08-31"
-
-	releaseDate, err := time.Parse(layout, str)
+	releaseDate, err := NewReleaseDate("2010-08-31")
 	if err != nil {
 		assert.Nil(t, err)
 	}
@@ -66,7 +62,7 @@ There are four whom we watch. The first is the surgeon, forced to put aside heal
 The world can change. Surgebinding and Shardwielding can return; the magics of ancient days can become ours again. These four people are key.
 One of them may redeem us.
 And one of them will destroy us.`,
-		ReleaseDate: &releaseDate,
+		ReleaseDate: releaseDate,
 		Genres:      []Genre{Fantasy},
 		Series:      Series{Title: "The Stormlight Archive", Sequence: 1},
 		Arefacts: []Artefact{
