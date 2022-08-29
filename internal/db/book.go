@@ -56,7 +56,7 @@ func (d *Database) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 	return results, nil
 }
 
-func (d *Database) PostBook(ctx context.Context, bookToInsert books.Book) (books.Book, error) {
+func (d *Database) PostBook(ctx context.Context, bookToInsert *books.Book) (books.Book, error) {
 	booksCollection := d.Client.Database("library").Collection("books")
 	result, err := booksCollection.InsertOne(context.TODO(), bookToInsert)
 
@@ -67,5 +67,5 @@ func (d *Database) PostBook(ctx context.Context, bookToInsert books.Book) (books
 
 	d.Logger.WithField("mongodb_id", result.InsertedID).Debugln("Successfully stored book with id", bookToInsert.ID)
 
-	return bookToInsert, nil
+	return *bookToInsert, nil
 }

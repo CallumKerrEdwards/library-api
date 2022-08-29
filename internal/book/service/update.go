@@ -7,6 +7,6 @@ import (
 )
 
 // UpdateBook - update book details.
-func (s *Service) UpdateBook(ctx context.Context, book books.Book) error {
+func (s *Service) UpdateBook(ctx context.Context, book *books.Book) error {
 	return ErrNotImplemented
 }
