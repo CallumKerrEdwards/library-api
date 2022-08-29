@@ -11,15 +11,20 @@ import (
 
 var (
 	postBody = `{
-		"author": "Brandon Sanderson",
+		"authors": [
+		  {
+			"forenames": "Brandon",
+			"sortName": "Sanderson"
+		  }
+		],
 		"title": "The Final Empire",
 		"series": {
-			"title": "Mistborn",
-			"sequence": 1
+		  "title": "Mistborn",
+		  "sequence": 1
 		}
-	}
+	  }
 `
-	expectedGetBody = `{"id":"%s","title":"The Final Empire","author":"Brandon Sanderson","series":{"sequence":1,"title":"Mistborn"}}
+	expectedGetBody = `{"id":"%s","title":"The Final Empire","authors":[{"forenames":"Brandon","sortName":"Sanderson"}],"series":{"sequence":1,"title":"Mistborn"}}
 `
 )
 

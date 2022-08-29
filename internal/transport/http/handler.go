@@ -21,7 +21,7 @@ var (
 )
 
 type BookService interface {
-	PostBook(context.Context, books.Book) (books.Book, error)
+	PostBook(context.Context, *books.Book) (books.Book, error)
 	GetBook(ctx context.Context, ID string) (books.Book, error)
 	GetAllBooks(ctx context.Context) ([]books.Book, error)
 }

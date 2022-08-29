@@ -7,7 +7,7 @@ import (
 )
 
 // CreateBook - create new book.
-func (s *Service) PostBook(ctx context.Context, book books.Book) (books.Book, error) {
+func (s *Service) PostBook(ctx context.Context, book *books.Book) (books.Book, error) {
 	s.Log.WithField("id", book.ID).Infoln("creating Book")
 
 	createdBook, err := s.Store.PostBook(ctx, book)
