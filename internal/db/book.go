@@ -58,7 +58,7 @@ func (d *Database) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 
 func (d *Database) PostBook(ctx context.Context, bookToInsert *books.Book) (books.Book, error) {
 	booksCollection := d.Client.Database("library").Collection("books")
-	result, err := booksCollection.InsertOne(context.TODO(), bookToInsert)
+	result, err := booksCollection.InsertOne(ctx, bookToInsert)
 
 	if err != nil {
 		d.Logger.WithError(err).Errorln("Cannot store book with id", bookToInsert.ID)
@@ -68,4 +68,30 @@ func (d *Database) PostBook(ctx context.Context, bookToInsert *books.Book) (book
 	d.Logger.WithField("mongodb_id", result.InsertedID).Debugln("Successfully stored book with id", bookToInsert.ID)
 
 	return *bookToInsert, nil
+}
+
+func (d *Database) UpdateBook(ctx context.Context, bookID string, updatedBook *books.Book) (bool, books.Book, error) {
+	booksCollection := d.Client.Database("library").Collection("books")
+
+	filter := bson.D{{Key: "id", Value: bookID}}
+
+	updateResult, err := booksCollection.ReplaceOne(ctx, filter, updatedBook)
+	if err != nil {
+		d.Logger.WithError(err).Errorln("Cannot update book with id", bookID)
+		return false, books.Book{}, err
+	}
+
+	d.Logger.WithField("mongodb_id", updateResult.UpsertedID).Debugln("Successfully updated book with id", bookID)
+
+	return updateResult.MatchedCount == 1, *updatedBook, nil
+}
+
+func (d *Database) DeleteBook(ctx context.Context, bookID string) error {
+	booksCollection := d.Client.Database("library").Collection("books")
+
+	filter := bson.D{{Key: "id", Value: bookID}}
+
+	_, err := booksCollection.DeleteOne(ctx, filter)
+
+	return err
 }

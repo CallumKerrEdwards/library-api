@@ -1,21 +1,19 @@
 package books
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
 // Book - representation of a book.
 type Book struct {
-	ID          string     `json:"id"`
-	Title       string     `json:"title"`
-	Authors     []Person   `json:"authors"`
-	Description string     `json:"description,omitempty"`
-	ReleaseDate *time.Time `json:"releaseDate,omitempty"`
-	Genres      []Genre    `json:"genres,omitempty"`
-	Series      Series     `json:"series"`
-	Arefacts    []Artefact `json:"artefacts,omitempty"`
+	ID          string       `json:"id"`
+	Title       string       `json:"title"`
+	Authors     []Person     `json:"authors"`
+	Description string       `json:"description,omitempty"`
+	ReleaseDate *ReleaseDate `json:"releaseDate,omitempty"`
+	Genres      []Genre      `json:"genres,omitempty"`
+	Series      Series       `json:"series"`
+	Arefacts    []Artefact   `json:"artefacts,omitempty"`
 }
 
 // Person - represetation of a person, for example an author or audiobook narrator.
@@ -34,7 +32,7 @@ type Artefact interface {
 	GetPath() string
 }
 
-func NewBook(title, description string, authors []Person, releaseDate *time.Time,
+func NewBook(title, description string, authors []Person, releaseDate *ReleaseDate,
 	genres []Genre, series Series, artefacts []Artefact) Book {
 	return Book{
 		ID:          uuid.New().String(),

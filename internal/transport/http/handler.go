@@ -22,8 +22,10 @@ var (
 
 type BookService interface {
 	PostBook(context.Context, *books.Book) (books.Book, error)
-	GetBook(ctx context.Context, ID string) (books.Book, error)
+	GetBook(ctx context.Context, id string) (books.Book, error)
 	GetAllBooks(ctx context.Context) ([]books.Book, error)
+	UpdateBook(ctx context.Context, id string, updatedBook *books.Book) (books.Book, error)
+	DeleteBook(ctx context.Context, id string) error
 }
 
 type Handler struct {
@@ -69,6 +71,8 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/api/v1/book", auth.JWTAuth(h.PostBook)).Methods("POST")
 	h.Router.HandleFunc("/api/v1/book", h.GetAllBooks).Methods("GET")
 	h.Router.HandleFunc("/api/v1/book/{id}", h.GetBook).Methods("GET")
+	h.Router.HandleFunc("/api/v1/book/{id}", auth.JWTAuth(h.UpdateBook)).Methods("PUT")
+	h.Router.HandleFunc("/api/v1/book/{id}", auth.JWTAuth(h.DeleteBook)).Methods("DELETE")
 }
 
 func (h *Handler) Serve() error {
