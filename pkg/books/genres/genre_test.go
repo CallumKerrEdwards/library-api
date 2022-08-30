@@ -1,4 +1,4 @@
-package books
+package genres
 
 import (
 	"encoding/json"

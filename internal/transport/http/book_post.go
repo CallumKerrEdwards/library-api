@@ -7,14 +7,15 @@ import (
 	"github.com/go-playground/validator/v10"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
+	"github.com/CallumKerrEdwards/library-api/pkg/books/genres"
 )
 
 type PostBookRequest struct {
 	Title       string             `json:"title" validate:"required"`
 	Authors     []books.Person     `json:"authors" validate:"required"`
-	Description string             `json:"description"`
+	Description *books.Description `json:"description"`
 	ReleaseDate *books.ReleaseDate `json:"releaseDate"`
-	Genres      []books.Genre      `json:"genres"`
+	Genres      []genres.Genre     `json:"genres"`
 	Series      books.Series       `json:"series"`
 	Arefacts    []books.Artefact   `json:"artefacts"`
 }

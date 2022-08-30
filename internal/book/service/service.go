@@ -2,15 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/CallumKerrEdwards/loggerrific"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
-)
-
-var (
-	ErrNotImplemented = errors.New("not implemented")
 )
 
 type Store interface {
