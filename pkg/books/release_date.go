@@ -19,6 +19,7 @@ func NewReleaseDate(date string) (*ReleaseDate, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &ReleaseDate{Time: datetime}, nil
 }
 

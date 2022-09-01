@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/CallumKerrEdwards/loggerrific"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -38,4 +39,10 @@ func NewDatabase(ctx context.Context, logger loggerrific.Logger) (*Database, err
 
 func (d *Database) Ping(ctx context.Context) error {
 	return d.Client.Ping(ctx, readpref.Primary())
+}
+
+// clearDatabase for testing only.
+func (d *Database) clearBooksCollection(ctx context.Context) error { //nolint:unused
+	_, err := d.Client.Database("library").Collection("books").DeleteMany(ctx, bson.D{{}})
+	return err
 }

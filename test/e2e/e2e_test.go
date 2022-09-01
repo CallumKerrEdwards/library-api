@@ -1,3 +1,6 @@
+//go:build e2e
+// +build e2e
+
 package e2e
 
 import (
@@ -33,7 +36,10 @@ var (
 	  }
 	],
 	"releaseDate": "2006-07-16",
-	"description": "There is always another secret.",
+	"description": {
+		"text": "There is always another secret.",
+		"format": "Plain"
+	},
 	"title": "The Final Empire",
 	"series": {
 	  "title": "Mistborn",
@@ -43,7 +49,7 @@ var (
 `
 	expectedGetResponse1 = `{"id":"%s","title":"The Final Empire","authors":[{"forenames":"Brandon","sortName":"Sanderson"}],"series":{"sequence":1,"title":"Mistborn"}}
 `
-	expectedPutAndGetResponse2 = `{"id":"%s","title":"The Final Empire","authors":[{"forenames":"Brandon","sortName":"Sanderson"}],"description":"There is always another secret.","releaseDate":"2006-07-16","series":{"sequence":1,"title":"Mistborn"}}
+	expectedPutAndGetResponse2 = `{"id":"%s","title":"The Final Empire","authors":[{"forenames":"Brandon","sortName":"Sanderson"}],"description":{"text":"There is always another secret.","format":"Plain"},"releaseDate":"2006-07-16","series":{"sequence":1,"title":"Mistborn"}}
 `
 	deleteResponse = `{"Message":"Successfully deleted book with ID %s"}
 `

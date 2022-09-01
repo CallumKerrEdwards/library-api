@@ -2,15 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/CallumKerrEdwards/loggerrific"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
-)
-
-var (
-	ErrNotImplemented = errors.New("not implemented")
 )
 
 type Store interface {
@@ -19,6 +14,7 @@ type Store interface {
 	PostBook(ctx context.Context, book *books.Book) (books.Book, error)
 	DeleteBook(ctx context.Context, id string) error
 	UpdateBook(ctx context.Context, id string, book *books.Book) (bool, books.Book, error)
+	GetAllBooksWithAudiobook(ctx context.Context) ([]books.Book, error)
 }
 
 // Service - provides all functions for accessing and modifying Books.

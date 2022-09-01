@@ -1,4 +1,4 @@
-package books
+package genres
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 type Genre uint8
 
 const (
-	Undefined Genre = iota
+	UndefinedGenre Genre = iota
 	Literary
 	Mystery
 	Romance
