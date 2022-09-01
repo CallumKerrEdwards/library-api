@@ -37,3 +37,16 @@ func (s *Service) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 
 	return book, nil
 }
+
+// GetAllBooks - getting all books.
+func (s *Service) GetAllAudiobooks(ctx context.Context) ([]books.Book, error) {
+	s.Log.Infof("getting all audiobooks")
+
+	book, err := s.Store.GetAllBooksWithAudiobook(ctx)
+	if err != nil {
+		s.Log.WithError(err).Errorln("Get All Failed")
+		return []books.Book{}, ErrFetchingBook
+	}
+
+	return book, nil
+}

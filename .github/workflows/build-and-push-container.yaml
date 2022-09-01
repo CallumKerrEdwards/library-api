@@ -51,7 +51,12 @@ jobs:
         run: |
           docker compose up --wait
       - name: Run End to End tests
-        run: go test -tags=e2e -v ./...
+        run: go test -tags=e2e,integration -v ./...
+        env:
+          DB_USERNAME: "root"
+          DB_PASSWORD: "mongopwd"
+          DB_HOST: "localhost"
+          DB_PORT: "27017"
       - name: Shut down test environment
         if: always()
         run: |

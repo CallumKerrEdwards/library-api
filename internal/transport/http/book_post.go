@@ -17,7 +17,7 @@ type PostBookRequest struct {
 	ReleaseDate *books.ReleaseDate `json:"releaseDate"`
 	Genres      []genres.Genre     `json:"genres"`
 	Series      books.Series       `json:"series"`
-	Arefacts    []books.Artefact   `json:"artefacts"`
+	Audiobook   *books.Audiobook   `json:"audiobook"`
 }
 
 func (h *Handler) PostBook(w http.ResponseWriter, r *http.Request) {
@@ -56,5 +56,5 @@ func (h *Handler) PostBook(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) convertPostBookRequestToBook(r *PostBookRequest) books.Book {
 	return books.NewBook(
-		r.Title, r.Description, r.Authors, r.ReleaseDate, r.Genres, r.Series, r.Arefacts)
+		r.Title, r.Description, r.Authors, r.ReleaseDate, r.Genres, r.Series, r.Audiobook)
 }

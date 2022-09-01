@@ -32,22 +32,20 @@ const (
 		"sequence": 1,
 		"title": "The Stormlight Archive"
 	},
-	"artefacts": [
-		{
-			"pathToAudioFile": "/path/to/audiobook.m4b",
-			"narrators": [
-				{
-					"forenames": "Michael",
-					"sortName": "Kramer"
-				},
-				{
-					"forenames": "Kate",
-					"sortName": "Reading"
-				}
-			],
-			"pathToCoverImage": "https://coppermind.net/w/images/TheWayOfKings.png"
-		}
-	]
+	"audiobook": {
+		"audiobookMediaId": "0001",
+		"narrators": [
+			{
+				"forenames": "Michael",
+				"sortName": "Kramer"
+			},
+			{
+				"forenames": "Kate",
+				"sortName": "Reading"
+			}
+		],
+		"coverImageMediaId": "0002"
+	}
 }`
 )
 
@@ -71,19 +69,17 @@ And one of them will destroy us.`, Format: text.Plain},
 		ReleaseDate: releaseDate,
 		Genres:      []genres.Genre{genres.Fantasy},
 		Series:      Series{Title: "The Stormlight Archive", Sequence: 1},
-		Arefacts: []Artefact{
-			Audiobook{
-				PathToAudioFile:  "/path/to/audiobook.m4b",
-				PathToCoverImage: "https://coppermind.net/w/images/TheWayOfKings.png",
-				Narrators: []Person{
-					{
-						Forenames: "Michael",
-						SortName:  "Kramer",
-					},
-					{
-						Forenames: "Kate",
-						SortName:  "Reading",
-					},
+		Audiobook: &Audiobook{
+			AudiobookMediaID:  "0001",
+			CoverImageMediaID: "0002",
+			Narrators: []Person{
+				{
+					Forenames: "Michael",
+					SortName:  "Kramer",
+				},
+				{
+					Forenames: "Kate",
+					SortName:  "Reading",
 				},
 			},
 		},
@@ -92,4 +88,68 @@ And one of them will destroy us.`, Format: text.Plain},
 	generatedJSON, err := json.MarshalIndent(twok, "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, jsonBook, string(generatedJSON))
+}
+
+var (
+	personsTests = []struct {
+		title    string
+		persons  []Person
+		expected string
+	}{
+		{
+			title:    "no persons",
+			persons:  []Person{},
+			expected: "",
+		},
+		{
+			title: "one person",
+			persons: []Person{
+				{
+					Forenames: "R. F.",
+					SortName:  "Kuang",
+				},
+			},
+			expected: "R. F. Kuang",
+		},
+		{
+			title: "two persons",
+			persons: []Person{
+				{
+					Forenames: "Amal",
+					SortName:  "El-Mohtar",
+				},
+				{
+					Forenames: "Max",
+					SortName:  "Gladstone",
+				},
+			},
+			expected: "Amal El-Mohtar & Max Gladstone",
+		},
+		{
+			title: "three persons",
+			persons: []Person{
+				{
+					Forenames: "Roger",
+					SortName:  "Clark",
+				},
+				{
+					Forenames: "Jay",
+					SortName:  "Snyder",
+				},
+				{
+					Forenames: "Elizabeth",
+					SortName:  "Evans",
+				},
+			},
+			expected: "Roger Clark, Jay Snyder & Elizabeth Evans",
+		},
+	}
+)
+
+func TestGetAuthors(t *testing.T) {
+	for _, test := range personsTests {
+		t.Run(test.title, func(t *testing.T) {
+			assert.Equal(t, test.expected, GetPersonsString(test.persons))
+		})
+	}
 }

@@ -19,7 +19,12 @@ tasks:
 
   gotest-e2e:
     cmds:
-      - go test -tags=e2e -v ./...
+      - go test -tags=e2e,integration -v ./...
+    env:
+      DB_USERNAME: "root"
+      DB_PASSWORD: "mongopwd"
+      DB_HOST: "localhost"
+      DB_PORT: "27017"
 
   run:
     cmds:
@@ -41,3 +46,13 @@ tasks:
       - task: run-detached
       - task: gotest-e2e
       - task: stop
+
+  integration-test:
+    cmds:
+      - docker compose up mongo --wait
+      - go test -tags=integration -v ./...
+    env:
+      DB_USERNAME: "root"
+      DB_PASSWORD: "mongopwd"
+      DB_HOST: "localhost"
+      DB_PORT: "27017"

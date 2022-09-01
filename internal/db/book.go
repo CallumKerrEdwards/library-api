@@ -56,6 +56,40 @@ func (d *Database) GetAllBooks(ctx context.Context) ([]books.Book, error) {
 	return results, nil
 }
 
+func (d *Database) GetAllBooksWithAudiobook(ctx context.Context) ([]books.Book, error) {
+	booksCollection := d.Client.Database("library").Collection("books")
+
+	var results []books.Book
+
+	cursor, err := booksCollection.Find(ctx, bson.D{{Key: "audiobook", Value: bson.M{"$ne": nil}}})
+
+	if err != nil {
+		d.Logger.WithError(err).Errorln("Cannot get all items from collection")
+		return []books.Book{}, err
+	}
+
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var elem books.Book
+
+		err := cursor.Decode(&elem)
+		if err != nil {
+			d.Logger.WithError(err).Errorln("Cannot decode element into book")
+			return []books.Book{}, err
+		} else {
+			results = append(results, elem)
+		}
+	}
+
+	if err := cursor.Err(); err != nil {
+		d.Logger.WithError(err).Errorln("Error reading cursor")
+		return []books.Book{}, err
+	}
+
+	return results, nil
+}
+
 func (d *Database) PostBook(ctx context.Context, bookToInsert *books.Book) (books.Book, error) {
 	booksCollection := d.Client.Database("library").Collection("books")
 	result, err := booksCollection.InsertOne(ctx, bookToInsert)

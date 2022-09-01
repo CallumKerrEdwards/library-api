@@ -26,6 +26,7 @@ type BookService interface {
 	GetAllBooks(ctx context.Context) ([]books.Book, error)
 	UpdateBook(ctx context.Context, id string, updatedBook *books.Book) (books.Book, error)
 	DeleteBook(ctx context.Context, id string) error
+	GetAllAudiobooks(ctx context.Context) ([]books.Book, error)
 }
 
 type Handler struct {
@@ -44,10 +45,7 @@ func NewHandler(service BookService, logger loggerrific.Logger) *Handler {
 	h.Router = mux.NewRouter()
 	h.mapRoutes()
 
-	m := NewMiddlewares(logger)
-
 	h.Router.Use(JSONMiddleware)
-	h.Router.Use(m.LoggingMiddleware)
 	h.Router.Use(TimeoutMiddleware)
 	h.AuthHandler = &auth.Handler{Log: logger}
 
@@ -64,15 +62,23 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
 	})
-	h.Router.HandleFunc("/api/v1/auth/login", h.AuthHandler.Login).Methods("GET")
-	h.Router.HandleFunc("/api/v1/auth/refresh", h.AuthHandler.Refresh).Methods("GET")
-	h.Router.HandleFunc("/api/v1/auth/welcome", h.AuthHandler.Welcome).Methods("GET")
 
-	h.Router.HandleFunc("/api/v1/book", auth.JWTAuth(h.PostBook)).Methods("POST")
-	h.Router.HandleFunc("/api/v1/book", h.GetAllBooks).Methods("GET")
-	h.Router.HandleFunc("/api/v1/book/{id}", h.GetBook).Methods("GET")
-	h.Router.HandleFunc("/api/v1/book/{id}", auth.JWTAuth(h.UpdateBook)).Methods("PUT")
-	h.Router.HandleFunc("/api/v1/book/{id}", auth.JWTAuth(h.DeleteBook)).Methods("DELETE")
+	apiSubrouter := h.Router.PathPrefix("/api/v1").Subrouter()
+
+	m := NewMiddlewares(h.Log)
+	apiSubrouter.Use(m.LoggingMiddleware)
+
+	apiSubrouter.HandleFunc("/auth/login", h.AuthHandler.Login).Methods(http.MethodGet)
+	apiSubrouter.HandleFunc("/auth/refresh", h.AuthHandler.Refresh).Methods(http.MethodGet)
+	apiSubrouter.HandleFunc("/auth/welcome", h.AuthHandler.Welcome).Methods(http.MethodGet)
+
+	apiSubrouter.HandleFunc("/book", auth.JWTAuth(h.PostBook)).Methods(http.MethodPost)
+	apiSubrouter.HandleFunc("/book", h.GetAllBooks).Methods(http.MethodGet)
+	apiSubrouter.HandleFunc("/book/{id}", h.GetBook).Methods(http.MethodGet)
+	apiSubrouter.HandleFunc("/book/{id}", auth.JWTAuth(h.UpdateBook)).Methods(http.MethodPut)
+	apiSubrouter.HandleFunc("/book/{id}", auth.JWTAuth(h.DeleteBook)).Methods(http.MethodDelete)
+
+	apiSubrouter.HandleFunc("/audiobooks", h.GetAllAudiobooks).Methods(http.MethodGet)
 }
 
 func (h *Handler) Serve() error {

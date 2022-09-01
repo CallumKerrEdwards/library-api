@@ -1,12 +1,12 @@
 package books
 
 type Audiobook struct {
-	PathToAudioFile             string   `json:"pathToAudioFile"`
-	Narrators                   []Person `json:"narrators"`
-	PathToCoverImage            string   `json:"pathToCoverImage"`
-	PathToSupplimentaryMaterial string   `json:"pathToSupplimentaryMaterial,omitempty"`
+	AudiobookMediaID             string   `json:"audiobookMediaId"`
+	Narrators                    []Person `json:"narrators"`
+	CoverImageMediaID            string   `json:"coverImageMediaId"`
+	SupplimentaryMaterialMediaID string   `json:"supplimentaryMaterialMediaId,omitempty"`
 }
 
-func (a Audiobook) GetPath() string {
-	return a.PathToAudioFile
+func (a Audiobook) GetNarrator() string {
+	return GetPersonsString(a.Narrators)
 }
