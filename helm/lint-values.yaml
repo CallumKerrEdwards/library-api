@@ -1,0 +1,10 @@
+mongodb:
+  host: "mongo.local"
+  port: "27017"
+  secret:
+    username: "test-usr"
+    password: "test-password"
+
+jwt:
+  secret:
+    signingKey: "test-signing-key"
