@@ -9,9 +9,10 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  APPLICATION_VERSION: ${{ github.ref_name }}
 
 jobs:
-  docker:
+  docker-build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -69,3 +70,48 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  helm-build-and-push:
+    name: Build and Push Helm Chart
+    runs-on: ubuntu-latest
+    needs: [docker-build-and-push]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Helm Install
+        uses: azure/setup-helm@v1
+      - name: Python install
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.2.1
+
+      - name: Update Helm chart version
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        run: |
+          cd ./helm/library-api
+          echo "App Version: $APPLICATION_VERSION"
+          chartVersion="${APPLICATION_VERSION:1}"
+          echo "Chart Version: $chartVersion"
+          sed -i "s/version\: 0\.1\.0/version\: $chartVersion/" Chart.yaml
+          cat Chart.yaml
+
+      - name: Run chart-testing (lint)
+        run: ct lint --chart-dirs helm/library-api --charts helm/library-api
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pushing Helm Chart
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        run: |
+          REPO_OWNER=`echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
+          helm package helm/library-api --app-version $APPLICATION_VERSION
+          # Get packed chart file name
+          PKG_NAME=`ls library-api-*.tgz`
+          helm push ${PKG_NAME} oci://ghcr.io/${REPO_OWNER}/charts
