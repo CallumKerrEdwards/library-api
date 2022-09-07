@@ -84,3 +84,9 @@ Create the name of the JWT secret to use
 {{- end }}
 
 
+{{- define "library-cms.mongodbHost" -}}
+{{- if .Values.mongodb.fromRelease.enable }}{{ .Release.Name }}{{ .Values.mongodb.fromRelease.hostSuffix }}
+{{- else }}
+{{- default "" .Values.mongodb.host }}
+{{- end }}
+{{- end }}
