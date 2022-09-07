@@ -4,3 +4,7 @@ mongodb:
   secret:
     username: "test-usr"
     password: "test-password"
+
+jwt:
+  secret:
+    signingKey: "test-signing-key"
