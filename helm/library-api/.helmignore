@@ -23,4 +23,4 @@
 .vscode/
 
 # Exlude lint files from push
-ci/lint-values.yaml
+ci/*
