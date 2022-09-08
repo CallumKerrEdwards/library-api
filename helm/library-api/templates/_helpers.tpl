@@ -72,17 +72,6 @@ Create the name of the database secret to use
 {{- end }}
 {{- end }}
 
-{{/*
-Create the name of the JWT secret to use
-*/}}
-{{- define "library-api.jwtSecretName" -}}
-{{- if .Values.mongodb.secret.create }}
-{{- default (printf "%s-jwt" (include "library-api.fullname" .)) .Values.jwt.secret.name }}
-{{- else }}
-{{- default "default" .Values.jwt.secret.name }}
-{{- end }}
-{{- end }}
-
 
 {{- define "library-cms.mongodbHost" -}}
 {{- if .Values.mongodb.fromRelease.enable }}{{ .Release.Name }}{{ .Values.mongodb.fromRelease.hostSuffix }}

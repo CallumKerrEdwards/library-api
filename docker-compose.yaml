@@ -25,7 +25,6 @@ services:
       DB_PASSWORD: "mongopwd"
       DB_HOST: "mongo"
       DB_PORT: "27017"
-      JWT_SIGNING_KEY: "test-signing-key"
     depends_on:
       - mongo
     ports:

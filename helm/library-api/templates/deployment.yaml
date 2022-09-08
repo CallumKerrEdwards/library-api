@@ -48,11 +48,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "library-api.databaseSecretName" . }}
                   key: password
-            - name: JWT_SIGNING_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "library-api.jwtSecretName" . }}
-                  key: signingKey
           ports:
             - name: http
               containerPort: 8080
@@ -61,10 +56,10 @@ spec:
             httpGet:
               path: /healthcheck
               port: http
-        #   readinessProbe:
-        #     httpGet:
-        #       path: /
-        #       port: http
+          readinessProbe:
+            httpGet:
+              path: /readycheck
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
