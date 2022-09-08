@@ -1,37 +1,39 @@
 package http
 
 import (
-	"encoding/json"
+	"errors"
 	"net/http"
 
-	"github.com/CallumKerrEdwards/loggerrific"
+	"github.com/CallumKerrEdwards/neterrific"
 	"github.com/gorilla/mux"
+)
 
-	"github.com/CallumKerrEdwards/library-api/pkg/books"
+var (
+	errRequiredID = errors.New("id is required")
 )
 
 func (h *Handler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
 	fetched, err := h.Service.GetAllBooks(r.Context())
 	if err != nil {
-		h.Log.WithError(err).Errorln("Cannot get all books")
-		w.WriteHeader(http.StatusInternalServerError)
-
+		neterrific.SendHTTPJSONError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	respondWithBooksSlice("books", fetched, w, h.Log)
+	neterrific.SendJSON(w, http.StatusOK, neterrific.Payload{
+		"books": fetched,
+	})
 }
 
 func (h *Handler) GetAllAudiobooks(w http.ResponseWriter, r *http.Request) {
 	fetched, err := h.Service.GetAllAudiobooks(r.Context())
 	if err != nil {
-		h.Log.WithError(err).Errorln("Cannot get all audiobooks")
-		w.WriteHeader(http.StatusInternalServerError)
-
+		neterrific.SendHTTPJSONError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	respondWithBooksSlice("audiobooks", fetched, w, h.Log)
+	neterrific.SendJSON(w, http.StatusOK, neterrific.Payload{
+		"audiobooks": fetched,
+	})
 }
 
 func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
@@ -39,36 +41,15 @@ func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 
 	id := vars["id"]
 	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
+		neterrific.SendHTTPJSONError(w, http.StatusBadRequest, errRequiredID)
 		return
 	}
 
 	fetched, err := h.Service.GetBook(r.Context(), id)
 	if err != nil {
-		h.Log.WithError(err).Errorln("Cannot get all book with id", id)
-		w.WriteHeader(http.StatusNotFound)
-
+		neterrific.SendHTTPJSONError(w, http.StatusNotFound, err)
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(fetched); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		h.Log.WithError(err).Errorln("Cannot encode response")
-
-		return
-	}
-}
-
-func respondWithBooksSlice(key string, fetched []books.Book,
-	w http.ResponseWriter, logger loggerrific.Logger) {
-	booksResponse := make(map[string][]books.Book)
-
-	booksResponse[key] = fetched
-
-	if err := json.NewEncoder(w).Encode(booksResponse); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		logger.WithError(err).Errorln("Cannot encode response")
-
-		return
-	}
+	neterrific.SendJSON(w, http.StatusOK, fetched)
 }

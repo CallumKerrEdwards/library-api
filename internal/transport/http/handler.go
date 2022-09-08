@@ -2,8 +2,6 @@ package http
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 
 	"net/http"
 	"os"
@@ -11,6 +9,7 @@ import (
 	"time"
 
 	"github.com/CallumKerrEdwards/loggerrific"
+	"github.com/CallumKerrEdwards/neterrific"
 	"github.com/gorilla/mux"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
@@ -59,7 +58,9 @@ func NewHandler(service BookService, logger loggerrific.Logger) *Handler {
 
 func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "OK")
+		neterrific.SendJSON(w, http.StatusOK, neterrific.Payload{
+			"health": "ok",
+		})
 	})
 	h.Router.HandleFunc("/readycheck", h.readiness)
 
@@ -80,16 +81,16 @@ func (h *Handler) mapRoutes() {
 func (h *Handler) readiness(w http.ResponseWriter, r *http.Request) {
 	ready, err := h.Service.IsReady(r.Context())
 	if err != nil {
-		SendHTTPJSONError(w, http.StatusInternalServerError, err)
+		neterrific.SendHTTPJSONError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if ready {
-		SendJSON(w, http.StatusOK, Payload{
+		neterrific.SendJSON(w, http.StatusOK, neterrific.Payload{
 			"readiness": "ok",
 		})
 	} else {
-		SendJSON(w, http.StatusInternalServerError, Payload{
+		neterrific.SendJSON(w, http.StatusInternalServerError, neterrific.Payload{
 			"readiness": "not ready",
 		})
 	}
@@ -120,22 +121,4 @@ func (h *Handler) Serve() error {
 	h.Log.Infoln("Shut down server gracefully")
 
 	return nil
-}
-
-type Payload map[string]any
-
-func SendHTTPJSONError(w http.ResponseWriter, status int, err error) {
-	SendJSON(w, status, Payload{
-		"status": status,
-		"error":  err.Error(),
-	})
-}
-
-func SendJSON(w http.ResponseWriter, status int, p any) {
-	w.WriteHeader(status)
-
-	err := json.NewEncoder(w).Encode(p)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
 }

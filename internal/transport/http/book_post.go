@@ -1,10 +1,9 @@
 package http
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/CallumKerrEdwards/neterrific"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
 	"github.com/CallumKerrEdwards/library-api/pkg/books/genres"
@@ -22,39 +21,22 @@ type PostBookRequest struct {
 
 func (h *Handler) PostBook(w http.ResponseWriter, r *http.Request) {
 	var request PostBookRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, "not a valid Book", http.StatusBadRequest)
-		h.Log.WithError(err).Errorln("Cannot unmarshall book")
 
-		return
-	}
-
-	validate := validator.New()
-	err := validate.Struct(request)
-
+	err := neterrific.ParseAndValidate(r, &request)
 	if err != nil {
-		http.Error(w, "not a valid Book", http.StatusBadRequest)
-		h.Log.WithError(err).Errorln("Book failed validation")
-
+		neterrific.SendHTTPJSONError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	convertedBook := h.convertPostBookRequestToBook(&request)
+	convertedBook := books.NewBook(
+		request.Title, request.Description, request.Authors, request.ReleaseDate,
+		request.Genres, request.Series, request.Audiobook)
 
 	postedBook, err := h.Service.PostBook(r.Context(), &convertedBook)
 	if err != nil {
-		h.Log.WithError(err).Errorln("Could not post book")
+		neterrific.SendHTTPJSONError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-
-	if err := json.NewEncoder(w).Encode(postedBook); err != nil {
-		h.Log.WithError(err).Errorln("Error handling request", r)
-	}
-}
-
-func (h *Handler) convertPostBookRequestToBook(r *PostBookRequest) books.Book {
-	return books.NewBook(
-		r.Title, r.Description, r.Authors, r.ReleaseDate, r.Genres, r.Series, r.Audiobook)
+	neterrific.SendJSON(w, http.StatusCreated, postedBook)
 }

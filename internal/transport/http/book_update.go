@@ -1,9 +1,9 @@
 package http
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/CallumKerrEdwards/neterrific"
 	"github.com/gorilla/mux"
 
 	"github.com/CallumKerrEdwards/library-api/pkg/books"
@@ -14,30 +14,23 @@ func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	id := vars["id"]
 	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
+		neterrific.SendHTTPJSONError(w, http.StatusBadRequest, errRequiredID)
 		return
 	}
 
 	var newBook books.Book
-	if err := json.NewDecoder(r.Body).Decode(&newBook); err != nil {
-		h.Log.WithError(err).Errorln("Error updating book with ID", id)
-		w.WriteHeader(http.StatusBadRequest)
 
+	err := neterrific.ParseAndValidate(r, &newBook)
+	if err != nil {
+		neterrific.SendHTTPJSONError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	newlyUpdatedBook, err := h.Service.UpdateBook(r.Context(), id, &newBook)
-
-	h.Log.WithField("updated book", true).Infoln(newlyUpdatedBook)
-
 	if err != nil {
-		h.Log.WithError(err).Errorln("Error updating book with ID", id)
-		w.WriteHeader(http.StatusInternalServerError)
-
+		neterrific.SendHTTPJSONError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(newlyUpdatedBook); err != nil {
-		h.Log.WithError(err).Errorln("Cannot encode response")
-	}
+	neterrific.SendJSON(w, http.StatusOK, newlyUpdatedBook)
 }
