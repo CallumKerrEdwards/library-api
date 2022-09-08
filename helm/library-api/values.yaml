@@ -10,13 +10,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-jwt:
-  secret:
-    create: true
-    annotations: {}
-    name: ""
-    signingKey:
-
 mongodb:
   fromRelease:
     ## If enabled, the mongodb host is set to {{ .Release.Name }}{{ .Values.mongodb.inRelease.hostSuffix }}

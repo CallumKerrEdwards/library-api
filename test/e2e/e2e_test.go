@@ -55,10 +55,6 @@ var (
 `
 )
 
-type loginResponse struct {
-	JWT string `json:"jwt"`
-}
-
 type postResponse struct {
 	ID string `json:"id"`
 }
@@ -67,19 +63,8 @@ func TestEndToEndWorkflow(t *testing.T) {
 	client := resty.New()
 	apiHost := "http://localhost:8081/api/v1"
 
-	// login
-	resp, err := client.R().Get(apiHost + "/auth/login")
-	assert.Nil(t, err)
-	assert.Equal(t, 200, resp.StatusCode())
-
-	var login loginResponse
-	err = json.Unmarshal(resp.Body(), &login)
-	assert.Nil(t, err)
-	assert.NotEmpty(t, login.JWT)
-
 	// create new book
-	resp, err = client.R().
-		SetAuthToken(login.JWT).
+	resp, err := client.R().
 		SetBody(postBody).
 		Post(apiHost + "/book")
 	assert.Nil(t, err)
@@ -91,14 +76,13 @@ func TestEndToEndWorkflow(t *testing.T) {
 	assert.NotEmpty(t, post.ID)
 
 	// get newly created book
-	resp, err = client.R().SetAuthToken(login.JWT).Get(apiHost + "/book/" + post.ID)
+	resp, err = client.R().Get(apiHost + "/book/" + post.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.Equal(t, fmt.Sprintf(expectedGetResponse1, post.ID), string(resp.Body()))
 
 	// update created book
 	resp, err = client.R().
-		SetAuthToken(login.JWT).
 		SetBody(fmt.Sprintf(putBody, post.ID)).
 		Put(apiHost + "/book/" + post.ID)
 	assert.Nil(t, err)
@@ -106,19 +90,19 @@ func TestEndToEndWorkflow(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf(expectedPutAndGetResponse2, post.ID), string(resp.Body()))
 
 	// get newly updated book
-	resp, err = client.R().SetAuthToken(login.JWT).Get(apiHost + "/book/" + post.ID)
+	resp, err = client.R().Get(apiHost + "/book/" + post.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.Equal(t, fmt.Sprintf(expectedPutAndGetResponse2, post.ID), string(resp.Body()))
 
 	// delete book
-	resp, err = client.R().SetAuthToken(login.JWT).Delete(apiHost + "/book/" + post.ID)
+	resp, err = client.R().Delete(apiHost + "/book/" + post.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.Equal(t, fmt.Sprintf(deleteResponse, post.ID), string(resp.Body()))
 
 	// book no longer exists
-	resp, err = client.R().SetAuthToken(login.JWT).Get(apiHost + "/book/" + post.ID)
+	resp, err = client.R().Get(apiHost + "/book/" + post.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, 404, resp.StatusCode())
 }

@@ -41,6 +41,15 @@ func (d *Database) Ping(ctx context.Context) error {
 	return d.Client.Ping(ctx, readpref.Primary())
 }
 
+func (d *Database) IsReady(ctx context.Context) (bool, error) {
+	err := d.Ping(ctx)
+	if err != nil {
+		return false, err
+	} else {
+		return true, nil
+	}
+}
+
 // clearDatabase for testing only.
 func (d *Database) clearBooksCollection(ctx context.Context) error { //nolint:unused
 	_, err := d.Client.Database("library").Collection("books").DeleteMany(ctx, bson.D{{}})

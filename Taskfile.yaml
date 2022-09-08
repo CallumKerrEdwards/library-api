@@ -12,6 +12,7 @@ tasks:
   lint:
     cmds:
       - golangci-lint run
+      - ct lint --chart-dirs helm/library-api --charts helm/library-api
 
   tidy:
     cmds:
